@@ -3,6 +3,11 @@ using System.Collections;
 
 public class Bg : MonoBehaviour
 {
+    public float m_fMinX = 0.0f;
+    public float m_fMaxX = 0.0f;
+    public float m_fDelay = 0.0f;
+    public GameObject m_objCube = null;
+
     Bg()
     {
         m_fMinX = 0.0f;
@@ -35,9 +40,4 @@ public class Bg : MonoBehaviour
             yield return new WaitForSeconds(m_fDelay);
         }
     }
-
-    public float m_fMinX;
-    public float m_fMaxX;
-    public float m_fDelay;
-    public GameObject m_objCube;
 }

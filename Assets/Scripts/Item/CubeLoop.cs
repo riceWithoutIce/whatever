@@ -3,6 +3,10 @@ using System.Collections;
 
 public class CubeLoop : MonoBehaviour
 {
+    public float m_fForce = 0.0f;
+    public float m_fTumble = 0.0f;
+    private Rigidbody m_rigidbody = null;
+
     CubeLoop()
     {
         m_fForce = 0.0f;
@@ -20,9 +24,4 @@ public class CubeLoop : MonoBehaviour
     {
         m_rigidbody.AddForce(Vector3.up * m_fForce);
     }
-
-
-    public float m_fForce;
-    public float m_fTumble;
-    private Rigidbody m_rigidbody;
 }
