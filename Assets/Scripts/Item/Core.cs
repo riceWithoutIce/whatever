@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Core : MonoBehaviour
@@ -8,9 +9,16 @@ public class Core : MonoBehaviour
     public float m_fRadiusUnit = 0.0f;
     public GameObject m_objCube = null;
     public Transform m_transParent = null;
+    public Slider m_slider = null;
+    public Color m_colorFull = Color.green;
+    public Color m_colorEmpty = Color.red;
+
+    private float m_fFullHealth = 100.0f;
+    private float m_fCurrHealth = 0.0f;
 
     private void Start()
     {
+        m_fCurrHealth = m_fFullHealth;
         if (m_nHeight < 0 || m_fHeightUnit < 0)
             return;
         Init();
@@ -60,5 +68,11 @@ public class Core : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void SetHealthUI()
+    {
+        m_slider.value = m_fCurrHealth;
+        m_slider.GetComponent<Image>().color = Color.Lerp(m_colorEmpty, m_colorFull, m_fCurrHealth / m_fFullHealth);
     }
 }
