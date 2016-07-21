@@ -1,23 +1,10 @@
 ﻿using System.Collections;
+using SingletonFramework;
 
-namespace GlobalSpace
+public class Global : SingletonFramework<Global>
 {
-    public class Global
+    private Global()
     {
-        #region Singleton
-        static private Global m_instance = null;
-        private Global()
-        {
 
-        }
-
-        static public Global GetInstance()
-        {
-            if (m_instance == null)
-                m_instance = new Global();
-            return m_instance;
-        }
-        #endregion
     }
 }
-

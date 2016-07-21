@@ -8,14 +8,6 @@ public class Bg : MonoBehaviour
     public float m_fDelay = 0.0f;
     public GameObject m_objCube = null;
 
-    Bg()
-    {
-        m_fMinX = 0.0f;
-        m_fMaxX = 0.0f;
-        m_fDelay = 0.0f;
-        m_objCube = null;
-    }
-
     void Start()
     {
         StartCoroutine(CubeLoop());
