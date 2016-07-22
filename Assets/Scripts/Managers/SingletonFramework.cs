@@ -3,7 +3,7 @@ using System.Collections;
 using System.Text;
 using System.Reflection;
 
-namespace SingletonFramework
+namespace Framework
 {
     public abstract class SingletonFramework<T> where T : SingletonFramework<T>
     {

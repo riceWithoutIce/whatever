@@ -5,20 +5,18 @@ using UnityStandardAssets.Utility;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField]
-    private MouseLook m_mouseLook;
-    [SerializeField]
-    private FOVKick m_fovKick = new FOVKick();
-    public GameObject m_objPlayer;
-    private Vector3 m_v3Offset;
-
-    void Start()
+    private void Start()
     {
-        m_v3Offset = transform.position - m_objPlayer.transform.position;
+     
     }
 
-    void LateUpdate()
+    private void FixedUpdate()
     {
-        transform.position = m_objPlayer.transform.position + m_v3Offset;
+        
+    }
+
+    private void LateUpdate()
+    {
+
     }
 }
