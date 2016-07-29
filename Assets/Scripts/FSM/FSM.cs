@@ -11,17 +11,17 @@ namespace Framework
         public delegate void FSMCallfunc();
 
         //状态类
-        public class FSMStatus
+        public class FSMState
         {
-            private T m_tStatus;
+            private T m_tState;
             //存储对应事件跳转
             private Dictionary<T, FSMTranslation> m_dicTranslation = new Dictionary<T, FSMTranslation>();
 
             #region getset
-            public T Status
+            public T State
             {
-                get { return m_tStatus; }
-                set { m_tStatus = value; }
+                get { return m_tState; }
+                set { m_tState = value; }
             }
 
             public Dictionary<T, FSMTranslation> DicTranslation
@@ -31,38 +31,38 @@ namespace Framework
 
             #endregion
 
-            public FSMStatus(T tStatus)
+            public FSMState(T tState)
             {
-                m_tStatus = tStatus;
+                m_tState = tState;
             }
         }
 
         //跳转类
         public class FSMTranslation
         {
-            private T m_tFromStatus;
-            private T m_tCurrStatus;
-            private T m_tToStatus;
+            private T m_tFromState;
+            private T m_tCurrState;
+            private T m_tToState;
             //回调函数
             private FSMCallfunc m_callfunc;
 
             #region getset
-            public T FromeStatus
+            public T FromeState
             {
-                get { return m_tFromStatus; }
-                set { m_tFromStatus = value; }
+                get { return m_tFromState; }
+                set { m_tFromState = value; }
             }
 
-            public T CurrStatus
+            public T CurrState
             {
-                get { return m_tCurrStatus; }
-                set { m_tCurrStatus = value; }
+                get { return m_tCurrState; }
+                set { m_tCurrState = value; }
             }
 
-            public T ToStatus
+            public T ToState
             {
-                get { return m_tToStatus; }
-                set { m_tToStatus = value; }
+                get { return m_tToState; }
+                set { m_tToState = value; }
             }
 
             public FSMCallfunc Callfunc
@@ -73,73 +73,73 @@ namespace Framework
 
             #endregion
 
-            public FSMTranslation(T tFromStatus, T tCurrStatus, T tToStatus, FSMCallfunc callfunc)
+            public FSMTranslation(T tFromState, T tCurrState, T tToState, FSMCallfunc callfunc)
             {
-                this.m_tFromStatus = tFromStatus;
-                this.m_tCurrStatus = tCurrStatus;
-                this.m_tToStatus = tToStatus;
+                this.m_tFromState = tFromState;
+                this.m_tCurrState = tCurrState;
+                this.m_tToState = tToState;
                 this.m_callfunc = callfunc;
             }
         }
 
         //当前状态
-        private T m_tCurrStatus;
-        private Dictionary<T, FSMStatus> m_dicStatus = new Dictionary<T, FSMStatus>();
+        private T m_tCurrState;
+        private Dictionary<T, FSMState> m_dicState = new Dictionary<T, FSMState>();
 
         #region getset
-        public T CurrStaus
+        public T CurrState
         {
-            get { return m_tCurrStatus; }
+            get { return m_tCurrState; }
         }
 
-        public Dictionary<T, FSMStatus> DicStatus
+        public Dictionary<T, FSMState> DicState
         {
-            get { return m_dicStatus; }
+            get { return m_dicState; }
         }
 
         #endregion
 
         //添加状态
-        public void AddStatus(T tStatu)
+        public void AddState(T tState)
         {
-            m_dicStatus[tStatu] = new FSMStatus(tStatu);
+            m_dicState[tState] = new FSMState(tState);
         }
 
         //添加跳转
-        public void AddTranslation(T tFromStatus, T tCurrStatus, T tToStatus, FSMCallfunc callfunc)
+        public void AddTranslation(T tFromState, T tCurrState, T tToState, FSMCallfunc callfunc)
         {
-            m_dicStatus[tFromStatus].DicTranslation[tCurrStatus] = new FSMTranslation(tFromStatus, tCurrStatus, tToStatus, callfunc);
+            m_dicState[tFromState].DicTranslation[tCurrState] = new FSMTranslation(tFromState, tCurrState, tToState, callfunc);
         }
 
         //启动状态机
-        public void Start(T tStatus)
+        public void Start(T tState)
         {
-            m_tCurrStatus = tStatus;
+            m_tCurrState = tState;
         }
 
         //处理事件
-        public void HandleEvent(T tStatus)
+        public void HandleEvent(T tState)
         {
-            if (m_tCurrStatus != null && m_dicStatus[m_tCurrStatus].DicTranslation.ContainsKey(tStatus))
+            if (m_tCurrState != null && m_dicState[m_tCurrState].DicTranslation.ContainsKey(tState))
             {
                 System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
                 watch.Start();
 
-                FSMTranslation transTmp = m_dicStatus[m_tCurrStatus].DicTranslation[tStatus];
+                FSMTranslation transTmp = m_dicState[m_tCurrState].DicTranslation[tState];
                 transTmp.Callfunc();
 
-                m_tCurrStatus = transTmp.ToStatus;
+                m_tCurrState = transTmp.ToState;
                 watch.Stop();
             }
         }
 
         public void Clear()
         {
-            foreach (KeyValuePair<T, FSMStatus> status in m_dicStatus)
+            foreach (KeyValuePair<T, FSMState> state in m_dicState)
             {
-                status.Value.DicTranslation.Clear();
+                state.Value.DicTranslation.Clear();
             }
-            DicStatus.Clear();
+            DicState.Clear();
         }
     }
 }

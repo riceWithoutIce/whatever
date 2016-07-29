@@ -6,14 +6,14 @@ public class CameraController : MonoBehaviour
 {
     public float m_fSmoothing = 5.0f;
 
-    private float m_fSensitivity;
-    private bool m_bRotate;
-    private bool m_bMove;
-    private Camera m_camera;
-    private GameObject m_objPlayer;
-    private Transform m_transPlayer;
-    private Vector3 m_v3Offset;
-    private Quaternion m_quaRot;
+    private float m_fSensitivity = 0.0f;
+    private bool m_bRotate = false;
+    private bool m_bMove = false;
+    private Camera m_camera = null;
+    private GameObject m_objPlayer = null;
+    private Transform m_transPlayer = null;
+    private Vector3 m_v3Offset = Vector3.zero;
+    private Quaternion m_quaRot = Quaternion.identity;
 
     private void Start()
     {
