@@ -26,7 +26,7 @@ public class PlayerConstruct : MonoBehaviour
         if (Physics.Raycast(rayCamera, out hitFloor, m_fCamRayLength, m_nFloorMask))
         {
             Vector3 v3HitPoint = hitFloor.point;
-            Debug.Log("x: " + v3HitPoint.x + "y: " + v3HitPoint.y + "z: " + v3HitPoint.z);
+            //Debug.Log("x: " + v3HitPoint.x + "y: " + v3HitPoint.y + "z: " + v3HitPoint.z);
         }
     }
 }

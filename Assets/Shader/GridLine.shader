@@ -4,7 +4,7 @@
 	{
 		Pass
 		{
-			Tags { "Queue" = "Background - 20" }
+			//Tags { "Queue" = "Background - 20" }
 			Blend SrcAlpha OneMinusSrcAlpha
 
 			BindChannels
