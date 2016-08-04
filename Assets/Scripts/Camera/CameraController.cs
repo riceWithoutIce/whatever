@@ -10,21 +10,22 @@ public class CameraController : MonoBehaviour
     public float m_fOffsetXMin = 40.0f;
     public float m_fOffsetXMax = 40.0f;
 
-    private int m_nFloorMask;
     private float m_fSensitivity = 0.0f;
     private float m_fRadius = 0.0f;
     private float m_fOffsetX = 0.0f;
+    private bool m_bLeftBtnDown = false;                        //鼠标左键按下
     private bool m_bRotate = false;
+    private bool m_bMouseLock = false;
     private Camera m_camera = null;
     private GameObject m_objPlayer = null;
     private Transform m_transPlayer = null;
     private Vector3 m_v3Offset = Vector3.zero;
+    private Vector3 m_v3OffsetLeftBtnDown = Vector3.zero;       //鼠标左键按下 offset
     private Quaternion m_quaRot = Quaternion.identity;          //鼠标右键 方向键 rot
     private Quaternion m_quaRotRot = Quaternion.identity;       //鼠标左键 rot
 
     private void Start()
     {
-        m_nFloorMask = LayerMask.GetMask("Floor");
         m_bRotate = false;
         m_camera = GetComponent<Camera>();
         m_objPlayer = GameObject.FindGameObjectWithTag("Player");
@@ -45,6 +46,7 @@ public class CameraController : MonoBehaviour
         MouseInput();
         KeyInput();
         AdaptPosition();
+        MouseLock();
     }
 
 
@@ -52,38 +54,66 @@ public class CameraController : MonoBehaviour
     {
         if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
         {
-            StartCoroutine(BackToDefault());
-            if (!m_bRotate)
+            if (m_bLeftBtnDown)
             {
-                transform.position = m_transPlayer.position - (m_quaRot * m_v3Offset);
+                m_bRotate = true;
+                m_bMouseLock = true;
+                //计算 x轴 上的旋转量
+                float fDesiredAngleX = Input.GetAxis("Mouse Y") * m_fSensitivity * Time.deltaTime;
+                //计算 y轴 上的旋转量
+                float fDesiredAngleY = Input.GetAxis("Mouse X") * m_fSensitivity * Time.deltaTime;
+
+                m_v3OffsetLeftBtnDown.x += fDesiredAngleX;
+                m_v3OffsetLeftBtnDown.x = Mathf.Clamp(m_v3OffsetLeftBtnDown.x, m_fOffsetXMin, m_fOffsetXMax);
+
+                m_v3OffsetLeftBtnDown.y += fDesiredAngleY;
+                m_quaRotRot = Quaternion.Euler(m_v3OffsetLeftBtnDown);
+                transform.position = m_transPlayer.position - (m_quaRotRot * m_v3Offset);
+
                 transform.LookAt(m_transPlayer);
+            }
+            else
+            {
+                StartCoroutine(BackToDefault());
+                if (!m_bRotate)
+                {
+                    transform.position = m_transPlayer.position - (m_quaRot * m_v3Offset);
+                    transform.LookAt(m_transPlayer);
+                }
             }
         }
     }
 
     private void MouseInput()
     {
+        if (!Input.GetKey(KeyCode.Mouse1) && !Input.GetKey(KeyCode.Mouse0))
+            m_bMouseLock = false;
+
         if (Input.GetKey(KeyCode.Mouse1))
         {
             if (Input.GetKey(KeyCode.Mouse0))
                 return;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            m_bMouseLock = true;  
             LookAt();
         }
         else
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            //处理鼠标左键
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                m_v3OffsetLeftBtnDown.x = m_fOffsetX;
+                m_v3OffsetLeftBtnDown.y = m_transPlayer.eulerAngles.y;
+            }
+            if (Input.GetKey(KeyCode.Mouse0))
+            {
+                m_bLeftBtnDown = true;
+                Rotate();
+            }
+            if (Input.GetKeyUp(KeyCode.Mouse0))
+                m_bLeftBtnDown = false;
         }
 
-        if (Input.GetKey(KeyCode.Mouse0))
-        {
-            if (Input.GetKey(KeyCode.Mouse1))
-                return;
-            Rotate();
-        }
-           
+
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
             if (m_camera.fieldOfView <= 100)
@@ -103,15 +133,10 @@ public class CameraController : MonoBehaviour
         {
             //计算 x轴 上的旋转量
             float fDesiredAngleX = Input.GetAxis("Mouse Y") * m_fSensitivity * Time.deltaTime;
-            Quaternion quaX = Quaternion.Euler(fDesiredAngleX, 0.0f, 0.0f);
-
             float fDesiredAngleY = m_transPlayer.eulerAngles.y;
-            m_fOffsetX += fDesiredAngleX;
 
-            if (m_fOffsetX < m_fOffsetXMin)
-                m_fOffsetX = m_fOffsetXMin;
-            else if (m_fOffsetX > m_fOffsetXMax)
-                m_fOffsetX = m_fOffsetXMax;
+            m_fOffsetX += fDesiredAngleX;
+            m_fOffsetX = Mathf.Clamp(m_fOffsetX, m_fOffsetXMin, m_fOffsetXMax);
 
             m_quaRot = Quaternion.Euler(m_fOffsetX, fDesiredAngleY, 0.0f);
             transform.position = m_transPlayer.position - (m_quaRot * m_v3Offset);
@@ -156,7 +181,7 @@ public class CameraController : MonoBehaviour
         float fYAngle = transform.eulerAngles.y;
         v3Target -= fYAngle * v3Dir;
 
-        Debug.DrawLine(m_transPlayer.position, v3Target, Color.red);
+        //Debug.DrawLine(m_transPlayer.position, v3Target, Color.red);
 
         RaycastHit hit;
         if (Physics.Linecast(m_transPlayer.position, v3Target, out hit))
@@ -188,5 +213,19 @@ public class CameraController : MonoBehaviour
 
         v3MoveHorizontal = v3MoveHorizontal / v3MoveHorizontal.magnitude;
         transform.RotateAround(m_transPlayer.position, v3MoveHorizontal, fXRot * Time.deltaTime);
+    }
+
+    private void MouseLock()
+    {
+        if (m_bMouseLock)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }

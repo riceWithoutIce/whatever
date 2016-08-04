@@ -10,7 +10,7 @@ public class DrawGrid : MonoBehaviour
     private bool m_bShowMain = false;
     private int m_nGridSizeX = 30;
     private int m_nGridSizeZ = 30;
-    private int m_nSteps = 2;
+    private int m_nSteps = 1;
     private int m_nLerpFlg = 0;
     private float m_fStartX = 0.0f;
     private float m_fStartZ = 0.0f;

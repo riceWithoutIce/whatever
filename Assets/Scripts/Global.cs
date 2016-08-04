@@ -23,4 +23,15 @@ public class Global : SingletonFramework<Global>
         eSTATUS_JUMP,
         eSTATUS_NONE,
     }
+
+    private bool m_bLandMark = false;
+
+    #region getset
+    public bool bLandMark
+    {
+        get { return m_bLandMark; }
+        set { m_bLandMark = value; }
+    }
+
+    #endregion
 }

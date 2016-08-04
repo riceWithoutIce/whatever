@@ -9,8 +9,6 @@ public class PlayerController : MonoBehaviour
     public float m_fSmoothTime = 5.0f;
 
     private float m_fTurnInputValue;
-    private Vector3 m_v3Offset = Vector3.zero;
-    private Transform m_transCurr = null;
     private Rigidbody m_rigidbody = null;
     private Animator m_anim = null;
     private Global.ePlayerState m_playerState = Global.ePlayerState.eSTATUS_IDLE;
@@ -19,7 +17,6 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         m_rigidbody = GetComponent<Rigidbody>();
-        m_transCurr = gameObject.transform;
         m_anim = GetComponentInChildren<Animator>();
     }
 
